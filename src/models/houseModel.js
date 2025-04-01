@@ -1,5 +1,4 @@
 const pool = require("../config/database");
-const { deleteWizard } = require("./wizardModel");
 
 const getHouses = async () => {
     const result = await pool.query("SELECT * FROM houses");
@@ -21,10 +20,9 @@ const createHouse = async (name, founder) => {
 
 const updateHouse = async (id, name, founder) => {
     const result = await pool.query(
-        "UPDATE houses SET id = $1, name = $2, founder = $3 WHERE id = $4 RETURNING *",
-        [id, name, founder]
+        "UPDATE houses SET name = $1, founder = $2 WHERE id = $3 RETURNING *",
+        [name, founder, id]
     );
-
     return result.rows[0];
 };
 
@@ -33,4 +31,4 @@ const deleteHouse = async (id) => {
     return result.rows[0];
 };
 
-module.exports = { getHouses, getHouseById, createHouse, updateHouse, deleteWizard, deleteHouse };
+module.exports = { getHouses, getHouseById, createHouse, updateHouse, deleteHouse };
