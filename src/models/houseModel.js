@@ -1,6 +1,6 @@
 const pool = require("../config/database");
 
-const getHouses = async () => {
+const getAllHouses = async () => {
     const result = await pool.query("SELECT * FROM houses");
     return result.rows;
 };
@@ -28,7 +28,12 @@ const updateHouse = async (id, name, founder) => {
 
 const deleteHouse = async (id) => {
     const result = await pool.query("DELETE FROM houses WHERE id = $1 RETURNING *", [id]);
-    return result.rows[0];
+
+    if (result.rowCount === 0) {
+        return { error: "Casa não encontrado." };
+    }
+
+    return { message: "Casa deletado com sucesso." };
 };
 
-module.exports = { getHouses, getHouseById, createHouse, updateHouse, deleteHouse };
+module.exports = { getAllHouses, getHouseById, createHouse, updateHouse, deleteHouse };

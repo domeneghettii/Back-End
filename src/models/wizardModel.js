@@ -1,15 +1,13 @@
-const pool = require("./../config/database")
+const pool = require("../config/database");
 
-const getWizards = async () => {
-    const result = await pool.query (
-        `   SELECT wizards.*, houses.name AS house_name
-            FROM wizards
-            LEFT JOIN houses ON wizards.house_id = houses.id
-        `
+const getAllWizards = async () => {
+    const result = await pool.query(
+        `SELECT wizards.*, houses.name AS house_name 
+         FROM wizards 
+         LEFT JOIN houses ON wizards.house_id = houses.id`
     );
-
     return result.rows;
-}
+};
 
 const getWizardById = async (id) => {
     const result = await pool.query(
@@ -35,11 +33,16 @@ const updateWizard = async (id, name, house_id) => {
         [name, house_id, id]
     );
     return result.rows[0];
-}
+};
 
 const deleteWizard = async (id) => {
     const result = await pool.query("DELETE FROM wizards WHERE id = $1 RETURNING *", [id]);
-    return result.rows[0];
+
+    if (result.rowCount === 0) {
+        return { error: "Bruxo não encontrado." };
+    }
+
+    return { message: "Bruxo deletado com sucesso." };
 };
 
-module.exports = { getWizards, getWizardById, createWizard, updateWizard, deleteWizard };
+module.exports = { getAllWizards, getWizardById, createWizard, updateWizard, deleteWizard };
