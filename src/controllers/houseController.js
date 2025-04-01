@@ -21,4 +21,42 @@ const getHouse = async (req, res) => {
     }
 };
 
-module.exports = { getAllHouses, getHouse };
+const createHouse = async (req, res) => {
+    try {
+        const { name, founder } = req.body;
+        const newHouse = await houseModel.createHouse(name, founder);
+        res.status(201).json(newHouse);
+    } catch (error) {
+	 console.log(error);
+        if (error.code === "23505") { // Código de erro do PostgreSQL para chave única violada
+            return res.status(400).json({ message: "E-mail já cadastrado." });
+        }
+        res.status(500).json({ message: "Erro ao criar House." });
+    }
+};
+
+const updateHouse = async (req, res) => {
+    try {
+        const { name, founder } = req.body;
+        const updateHouse = await houseModel.updateHouse(req.params.id, name, founder);
+        if (!updateHouse) {
+            return res.status(404).json({ message: "House não encontrado." });
+        }
+        res.json(updateHouse);
+    } catch (error) {
+        res.status(500).json({ message: "Erro ao atualizar House." });
+    }
+};
+
+const deleteHouse = async (req, res) => {
+    try {
+        const message = await houseModel.deleteHouse(req.params.id);
+        res.json(message);
+    } catch (error) {
+        res.status(500).json({ message: "Erro ao deletar House." });
+    }
+};
+
+
+
+module.exports = { getAllHouses, getHouse, createHouse, updateHouse, deleteHouse };
