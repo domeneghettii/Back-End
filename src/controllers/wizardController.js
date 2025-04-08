@@ -2,7 +2,7 @@ const wizardModel = require("../models/wizardModel");
 
 const getAllWizards = async (req, res) => {
     try {
-        const wizards = await wizardModel.getAllWizards();
+        const wizards = await wizardModel.getWizards();
         res.json(wizards);
     } catch (error) {
         res.status(500).json({ message: "Erro ao buscar bruxos." });
@@ -31,19 +31,6 @@ const createWizard = async (req, res) => {
     }
 };
 
-const updateWizard = async (req, res) => {
-    try {
-        const { name, house_id } = req.body;
-        const updatedWizard = await wizardModel.updateWizard(req.params.id, name, house_id);
-        if (!updatedWizard) {
-            return res.status(404).json({ message: "Bruxo não encontrado." });
-        }
-        res.json(updatedWizard);
-    } catch (error) {
-        res.status(500).json({ message: "Erro ao atualizar bruxo." });
-    }
-};
-
 const deleteWizard = async (req, res) => {
     try {
         const message = await wizardModel.deleteWizard(req.params.id);
@@ -53,4 +40,17 @@ const deleteWizard = async (req, res) => {
     }
 };
 
-module.exports = { getAllWizards, getWizard, createWizard, updateWizard, deleteWizard };
+const updateWizard = async (req, res) => {
+    try {
+        const { name, house_id } = req.body;
+        const updateWizard = await wizardModel.updateWizard(req.params.id, name, house_id);
+        if (!updateWizard) {
+            return res.status(404).json({ message: "bruxo não encontrado." });
+        }
+        res.json(updateWizard);
+    } catch (error) {
+        res.status(500).json({ message: "Erro ao atualizar bruxo." });
+    }
+};
+
+module.exports = { getAllWizards, getWizard, createWizard, deleteWizard, updateWizard };
